@@ -1,10 +1,9 @@
 from fastapi import FastAPI
-from app.api import routes
-from .utils.logging import setup_logger
+from app.api.routes import router as eda_vis_router
 
-logger = setup_logger(__name__)
-logger.info("App is starting...")
-app = FastAPI(title="Python API Boilerplate")
+app = FastAPI(title="EDA & Visualisation API")
+app.include_router(eda_vis_router)
 
-# Register routes
-app.include_router(routes.router)
+@app.get("/health")
+def health():
+    return {"status": "ok"}

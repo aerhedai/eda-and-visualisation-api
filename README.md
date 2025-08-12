@@ -1,149 +1,158 @@
-# Python API Boilerplate
+# EDA and Visualisation API
 
-A ready-to-use, Dockerized FastAPI boilerplate for building scalable and maintainable Python APIs quickly. This boilerplate provides a modular folder structure, logging, routing, and example code to get you started with building your own APIs efficiently.
+## Overview
+The **EDA and Visualisation API** is a FastAPI-based microservice that performs **Exploratory Data Analysis (EDA)** and generates **visualisations** from dataset inputs.  
+It contains two main endpoints:
+1. `/eda-insights` → Generates key dataset statistics and summaries.
+2. `/visualisation` → Produces charts from dataset columns.
+
+This API is designed to be part of the **Dataset AI pipeline** (https://github.com/aerhedai/dataset-ai-integration-tests) and works in conjunction with other modular APIs.
 
 ---
 
 ## Features
-
-- ⚡ FastAPI framework with automatic docs (`/docs` and `/redoc`)
-- 🧱 Modular code organisation (routes, services, models, utils)
-- 🐳 Docker support for consistent local development and deployment
-- 📜 Logging included for easier debugging and monitoring
-- 🚀 Easily extendable for real projects
+- **EDA Insights**:
+  - Dataset shape, column names, and types.
+  - Basic statistical summary.
+  - Missing values count.
+  - Target column distribution (if provided).
+- **Visualisations**:
+  - Histograms for numeric columns.
+  - Bar charts for categorical columns.
+  - Scatter plots for relationships.
+  - JSON-based chart data using Plotly for easy integration into web apps.
 
 ---
 
-## Directory Structure
-
+## Project Structure
 ```
-.
+eda-and-visualisation-api/
+│
 ├── app/
-│   ├── api/
-│   │   └── routes.py           # API route definitions
-│   ├── services/
-│   │   └── example.py          # Business logic/services
-│   ├── models/
-│   │   └── example_schema.py   # Pydantic models for validation
-│   ├── core/
-│   │   └── config.py           # Pydantic config for setup
-│   ├── utils/
-│   │   └── logging.py          # Logger setup
-│   ├── main.py                 # FastAPI app setup and route inclusion
+│   ├── main.py             # API entry point
+│   ├── routes.py           # API endpoints
+│   ├── models.py           # Pydantic models for requests/responses
+│   ├── eda.py               # EDA logic
+│   ├── visualisation.py     # Visualisation logic
+│   ├── logging_config.py    # Centralised logging configuration
+│
 ├── tests/
-│   └── test_example.py         # Example unit tests
-├── Dockerfile                  # Docker configuration
-├── requirements.txt            # Python dependencies
-├── README.md                   # Project readme
-├── .gitignore                  # Ignore rules
-├── LICENSE                     # Distribution and Usage License
-├── .env.example                # Environmental variable examples
-├── CHANGELOG.md                # API boilerplate changelog
+│   ├── test_routes.py       # Unit tests for endpoints
+│
+├── requirements.txt         # Python dependencies
+├── README.md
+├── CHANGELOG.md
 ```
 
 ---
 
-## Getting Started
+## Installation
 
-### 🔧 Prerequisites
-
-- Docker installed on your machine
-- (Optional) Python 3.9+ if not using Docker
-
-### 🚀 Running with Docker
-
-1. Build the image:
-   ```bash
-   docker build -t api-boilerplate .
-   ```
-
-2. Run the container:
-   ```bash
-   docker run -p 8000:8080 api-boilerplate
-   ```
-
-3. Access your API:
-   - API base: http://localhost:8000
-   - Swagger UI: http://localhost:8000/docs
-   - ReDoc: http://localhost:8000/redoc
-
----
-
-### 🧪 Running Locally (without Docker)
-
-1. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate        # macOS/Linux
-   venv\Scripts\activate           # Windows
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Run the app:
-   ```bash
-   uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-   ```
-
----
-
-## 🛠️ Extending the Boilerplate
-
-- **Add Routes:**  
-  Define new endpoints in `app/api/` and register them via the router.
-
-- **Add Services:**  
-  Place logic in `app/services/` and call from your routes.
-
-- **Define Models:**  
-  Use Pydantic in `app/models/` for request/response validation.
-
-- **Utilities:**  
-  Add helpers/loggers in `app/utils/`.
-
-- **Tests:**  
-  Write unit and integration tests in `tests/`.
-
-- **Environment Configs (optional):**  
-  Use `python-dotenv` or other tools for managing environment variables.
-
----
-
-## ✅ Notes
-
-- Docker exposes port 8080 (internal) as 8000 (host).
-- Modify the Dockerfile or FastAPI config if you want different ports.
-- Structure is suitable for scaling: you can add auth, DB, caching, etc.
-
----
-
-## 🧪 Example Endpoint
-
-Try:
-```
-GET http://localhost:8000/example
+### 1. Clone the repository
+```bash
+git clone https://github.com/aerhedai/eda-and-visualisation-api.git
+cd eda-and-visualisation-api
 ```
 
-Response:
+### 2. Create a virtual environment
+```bash
+python -m venv venv
+source venv/bin/activate   # Linux / macOS
+venv\Scripts\activate      # Windows
+```
+
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Usage
+
+### Run locally
+```bash
+uvicorn app.main:app --reload --port 8005
+```
+
+### Example request (EDA Insights)
+```bash
+curl -X POST "http://localhost:8005/eda-insights" \
+-H "Content-Type: application/json" \
+-d '{
+    "rows": [
+        {"col1": 1, "col2": "A"},
+        {"col1": 2, "col2": "B"},
+        {"col1": 3, "col2": "A"}
+    ],
+    "target_column": "col2"
+}'
+```
+
+### Example request (Visualisation)
+```bash
+curl -X POST "http://localhost:8005/visualisation" \
+-H "Content-Type: application/json" \
+-d '{
+    "rows": [
+        {"col1": 1, "col2": "A"},
+        {"col1": 2, "col2": "B"},
+        {"col1": 3, "col2": "A"}
+    ],
+    "chart_type": "histogram",
+    "x_column": "col1"
+}'
+```
+
+---
+
+## API Endpoints
+
+### `POST /eda-insights`
+**Request Body:**
 ```json
 {
-  "message": "Hello from the example service!"
+    "rows": [ { "column1": "value1", "column2": "value2" }, ... ],
+    "target_column": "optional_target"
+}
+```
+
+**Response:**
+```json
+{
+    "shape": [3, 2],
+    "columns": ["col1", "col2"],
+    "missing_values": { "col1": 0, "col2": 0 },
+    "statistics": { "col1": { "mean": 2.0, "min": 1, "max": 3 } }
 }
 ```
 
 ---
 
-## 🧾 License
+### `POST /visualisation`
+**Request Body:**
+```json
+{
+    "rows": [ { "column1": "value1", "column2": "value2" }, ... ],
+    "chart_type": "histogram",
+    "x_column": "col1",
+    "y_column": "optional"
+}
+```
 
-MIT License. Feel free to use and modify.
+**Response:**
+```json
+{
+    "chart_type": "histogram",
+    "figure": { "data": [...], "layout": {...} }
+}
+```
 
 ---
 
-## 🙌 Contributing
-
-Pull requests welcome! Open an issue for feature requests or bugs.
+## Running Tests
+```bash
+pytest
+```
 
 ---
