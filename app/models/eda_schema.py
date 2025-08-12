@@ -8,7 +8,6 @@ class EDARequest(BaseModel):
     rows: Optional[List[Dict[str, Any]]] = None
     target_column: Optional[str] = None
 
-
 class EDAResponse(BaseModel):
     summary: Dict[str, Any]
-    correlations: Dict[str, float]
+    correlations: Dict[str, Dict[str, float]]  # <-- change here
