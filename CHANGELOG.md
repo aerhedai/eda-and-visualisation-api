@@ -7,34 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.0] - 2025-07-23
+## [1.0.0] - 2025-08-12
+### Added
+- Initial release of EDA and Visualisation API.
+- `/eda-insights` endpoint to perform statistical summaries and dataset profiling.
+- `/visualisation` endpoint to generate histograms, bar charts, and scatter plots using Plotly.
+- Pydantic request/response models for validation.
+- Logging configuration for API activity tracking.
+- Unit tests for both endpoints.
 
-### 🎉 Initial Release
-
-#### Added
-- ✅ Dockerfile for building and running the API in a containerised environment.
-- ✅ `main.py` for FastAPI app instantiation and route registration.
-- ✅ Modular folder structure:
-  - `api/` – Contains route definitions.
-  - `services/` – Business logic layer (example included).
-  - `models/` – Pydantic schemas for request/response models.
-  - `core/` – Pydantic config for setup.
-  - `utils/` – Logger utility included.
-  - `tests/` – Sample unit test structure.
-- ✅ `logging.py` for basic application logging using the standard library.
-- ✅ Example endpoint: `/example`.
-- ✅ Swagger/OpenAPI support via FastAPI (`/docs` and `/redoc`).
-- ✅ Requirements file for dependency management.
-- ✅ Readme with full instructions and project overview.
-
-## [1.0.1] - 2025-07-23
-
-### Fixed
-- 🐛 Added missing `httpx` dependency required for testing with `TestClient`.
-- ✅ Ensured all test routes run successfully using `pytest`.
-
-
----
-
-> Future versions will include enhancements like database support, authentication, advanced logging, environment-based configuration, and more.
-
+### Notes
+- This release uses Plotly for JSON chart output, allowing for easy embedding into dashboards without file I/O.
+- Designed to integrate with Dataset AI pipeline tester.

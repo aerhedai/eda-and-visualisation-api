@@ -1,20 +1,21 @@
 import logging
 import sys
 
-def setup_logger(name: str = "app") -> logging.Logger:
-    """
-    Returns a logger instance with a consistent format and level.
-    """
+def setup_logging():
+    """Set up logging configuration for the API."""
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
     formatter = logging.Formatter(
-        "[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s", "%Y-%m-%d %H:%M:%S"
+        "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
     )
 
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(formatter)
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
 
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)  # Change to logging.INFO in production
-    logger.addHandler(handler)
-    logger.propagate = False  # Avoid duplicate logs
+    # Avoid duplicate log entries
+    logger.propagate = False
 
     return logger
